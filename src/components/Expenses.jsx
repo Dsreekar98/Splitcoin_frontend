@@ -29,7 +29,6 @@ export default function Expenses(props) {
             }
           );
           const data = await response.json();
-          console.log(data);
           setExpenses(data);
         } catch (error) {
           console.error("Error fetching groups:", error.message);
