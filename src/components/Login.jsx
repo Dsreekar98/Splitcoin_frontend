@@ -16,7 +16,6 @@ export default function Login() {
         email: email,
         password: password1,
       };
-      console.log("BACKEND ", process.env.BACKEND_HOST);
       const response = await axios.post(
         process.env.REACT_APP_BACKEND_HOST + "/api/v1/auth/authenticate",
         payload,
@@ -29,7 +28,6 @@ export default function Login() {
       );
       setEmail("");
       setPassword1("");
-      console.log("response " + response.status);
       if (response.status == "200") {
         setAuthToken(response.data.token);
         navigate("/");
