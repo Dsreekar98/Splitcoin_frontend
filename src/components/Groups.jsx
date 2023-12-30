@@ -18,6 +18,10 @@ export default function Groups() {
           },
         });
         const data = await response.json();
+<<<<<<< HEAD
+=======
+        
+>>>>>>> 8f1141f80fe0bf998d159fbf4c11ff777cfd1fd3
         setGroups(data);
       } catch (error) {
         setAuthToken(null);
