@@ -112,33 +112,14 @@ export default function CreateGroup() {
             id="description"
           />
         </div>
-        <div className="mb-3">
-          <label htmlFor="currency" className="form-label">
-            Currency
-          </label>
-          <select
-            id="currency"
-            className="form-control"
-            value={currency}
-            onChange={(input) => {
-              setCurrency(input.target.value);
-            }}
-          >
-            <option value="" disabled>
-              Select Currency
-            </option>
-            {availableCurrencies.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
-        </div>
+        
 
         {users.length>0?<h3>Enter User Details</h3>:""}
+        <table className ="table table-hover">
+        <tbody>
         {users.map((user, index) => (
-        <div key={index} style={{ marginBottom: '10px' }}>
-          <br/>
+        <tr key={index} >
+          <td>
           <label htmlFor="name">
             User Name:
             <input
@@ -149,6 +130,8 @@ export default function CreateGroup() {
               onChange={(e) => handleInputChange(index, 'name', e.target.value)}
             />
           </label>
+          </td>
+          <td>
           <label htmlFor="Email">
             User Email:
             <input
@@ -159,11 +142,17 @@ export default function CreateGroup() {
               onChange={(e) => handleInputChange(index, 'email', e.target.value)}
             />
           </label>
+          </td>
+          <td>
+            <br/>
           <button type="button" onClick={() => handleDeleteUser(index)}>
             Delete
           </button>
-        </div>
+          </td>
+        </tr>
       ))}
+      </tbody>
+      </table>
 
         <button type="button" className="btn btn-primary" onClick={handleAddUser}>
         Add User

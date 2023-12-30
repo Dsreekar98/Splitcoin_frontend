@@ -7,6 +7,7 @@ export default function Login() {
   const { setAuthToken } = useAuth();
   let [email, setEmail] = useState("");
   let [password1, setPassword1] = useState("");
+  let [message, setMessage] = useState("");
   const navigate = useNavigate();
   const login = async (e) => {
     e.preventDefault();
@@ -15,9 +16,9 @@ export default function Login() {
         email: email,
         password: password1,
       };
-      console.log("BACKEND ",process.env.BACKEND_HOST);
+      console.log("BACKEND ", process.env.BACKEND_HOST);
       const response = await axios.post(
-        process.env.REACT_APP_BACKEND_HOST+"/api/v1/auth/authenticate",
+        process.env.REACT_APP_BACKEND_HOST + "/api/v1/auth/authenticate",
         payload,
         {
           headers: {
@@ -28,9 +29,13 @@ export default function Login() {
       );
       setEmail("");
       setPassword1("");
-      setAuthToken(response.data.token);
-      navigate("/");
+      console.log("response " + response.status);
+      if (response.status == "200") {
+        setAuthToken(response.data.token);
+        navigate("/");
+      }
     } catch (error) {
+      setMessage("Invalid Email and Password");
       // Handle errors, e.g., display an error message
       console.error("Error:", error.response?.data || error.message);
     } finally {
@@ -67,6 +72,7 @@ export default function Login() {
             className="form-control"
             id="Password"
           />
+          <div style={{ color: 'red' }}>{message}</div>
         </div>
 
         <button type="submit" className="btn btn-primary">

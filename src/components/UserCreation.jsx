@@ -12,6 +12,7 @@ export default function UserCreation() {
   let [phoneNumber, setPhoneNumber] = useState("");
   let [isMatched, setIsMatched] = useState(false);
   let [submitted, setSubmitted] = useState();
+  let [message, setMessage] = useState("");
   const navigate = useNavigate();
   function matchFunction() {
     return password1 == password2;
@@ -26,10 +27,10 @@ export default function UserCreation() {
         email: email,
         phoneNumber: phoneNumber,
         password: password1,
-        role:"ADMIN"
+        role: "ADMIN",
       };
       const response = await axios.post(
-        process.env.REACT_APP_BACKEND_HOST+"/api/v1/auth/register",
+        process.env.REACT_APP_BACKEND_HOST + "/api/v1/auth/register",
         payload,
         {
           headers: {
@@ -46,7 +47,7 @@ export default function UserCreation() {
       setAuthToken(response.data.token);
       navigate("/");
     } catch (error) {
-      // Handle errors, e.g., display an error message
+      setMessage("Account already created with this Email address");
       console.error("Error:", error.response?.data || error.message);
     } finally {
       setSubmitted(false);
@@ -139,6 +140,7 @@ export default function UserCreation() {
               <p>Password is not Matching</p>
             ))}
         </div>
+        <div style={{ color: "red" }}>{message}</div>
         <button
           type="submit"
           className="btn btn-primary"

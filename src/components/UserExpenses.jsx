@@ -109,12 +109,20 @@ export default function UserExpenses() {
             <td> Total Amount</td>
             <td>{totalAmount + " " + currency}</td>
           </tr>
+        </tbody>
+      </table>
+      <table className="table table-striped">
+        <thead>
+          <tr>
+          <th scope="col">User Name:</th>
+          <th scope="col">Amount</th>
+          <th scope="col">Part of the Expnse?</th>
+          </tr>
+        </thead>
+        <tbody>
           {UserExpenses.map((userExpense, index) => (
             <tr key={index}>
-              <td>User Name:</td>
               <td>{userExpense.user.name}</td>
-
-              <td> Amount:</td>
               <td>
                 {
                   <input
@@ -128,8 +136,6 @@ export default function UserExpenses() {
                   />
                 }
               </td>
-
-              <td>Part Of The Expense?:</td>
               <td>
                 <select
                   id="currency"
