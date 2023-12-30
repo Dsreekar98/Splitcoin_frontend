@@ -4,27 +4,26 @@ import { useAuth } from "./JwtToken";
 import { useNavigate } from "react-router-dom";
 
 export default function CreateGroup() {
-  const { token } = useAuth();
+  const { token, setAuthToken } = useAuth();
   let [name, setName] = useState("");
   let [description, setDescription] = useState("");
   let [currency, setCurrency] = useState("");
   let [status, setStatus] = useState("");
-  let [users,setUsers]=useState([]);
+  let [users, setUsers] = useState([]);
   const handleAddUser = () => {
-    setUsers([...users, { name: '', email: '' }]);
+    setUsers([...users, { name: "", email: "" }]);
   };
   const handleInputChange = (index, key, value) => {
     const newUsers = [...users];
     newUsers[index][key] = value;
     setUsers(newUsers);
-    console.log(users);
   };
 
-  const handleDeleteUser=(index)=>{
-    const newUsers=[...users];
-    newUsers.splice(index,1);
+  const handleDeleteUser = (index) => {
+    const newUsers = [...users];
+    newUsers.splice(index, 1);
     setUsers(newUsers);
-  }
+  };
   const [availableCurrencies, setAvailableCurrencies] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
@@ -42,6 +41,8 @@ export default function CreateGroup() {
         );
         setAvailableCurrencies(response.data);
       } catch (error) {
+        setAuthToken(null);
+        localStorage.removeItem("token");
         console.error("Error fetching available currencies:", error.message);
       }
     };
@@ -55,7 +56,7 @@ export default function CreateGroup() {
         name: name,
         description: description,
         currency: currency,
-        users:users
+        users: users,
       };
       const response = await axios.post(
         `${process.env.REACT_APP_BACKEND_HOST}/creategroup`,
@@ -71,12 +72,13 @@ export default function CreateGroup() {
       setName("");
       setDescription("");
       setCurrency("");
-      console.log("stats", response.status);
       if (response.status == "200") navigate("/retrieveGroups");
       else {
         setStatus("Failed to save");
       }
     } catch (error) {
+      setAuthToken(null);
+      localStorage.removeItem("token");
       console.error("Error fetching available currencies:", error.message);
     }
   };
@@ -112,56 +114,85 @@ export default function CreateGroup() {
             id="description"
           />
         </div>
-        
-
-        {users.length>0?<h3>Enter User Details</h3>:""}
-        <table className ="table table-hover">
-        <tbody>
-        {users.map((user, index) => (
-        <tr key={index} >
-          <td>
-          <label htmlFor="name">
-            User Name:
-            <input
-              type="text"
-              value={user.name}
-              id="name"
-              required
-              onChange={(e) => handleInputChange(index, 'name', e.target.value)}
-            />
+        <div className="mb-3">
+          <label htmlFor="currency" className="form-label">
+            Currency
           </label>
-          </td>
-          <td>
-          <label htmlFor="Email">
-            User Email:
-            <input
-              type="email"
-              id="Email"
-              value={user.age}
-              required
-              onChange={(e) => handleInputChange(index, 'email', e.target.value)}
-            />
-          </label>
-          </td>
-          <td>
-            <br/>
-          <button type="button" onClick={() => handleDeleteUser(index)}>
-            Delete
-          </button>
-          </td>
-        </tr>
-      ))}
-      </tbody>
-      </table>
+          <select
+            id="currency"
+            className="form-control"
+            value={currency}
+            onChange={(input) => {
+              setCurrency(input.target.value);
+            }}
+          >
+            <option value="" disabled>
+              Select Currency
+            </option>
+            {availableCurrencies.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        <button type="button" className="btn btn-primary" onClick={handleAddUser}>
-        Add User
-      </button>
-      <br/><br/>
+        {users.length > 0 ? <h3>Enter User Details</h3> : ""}
+        <table className="table table-hover">
+          <tbody>
+            {users.map((user, index) => (
+              <tr key={index}>
+                <td>
+                  <label htmlFor="name">
+                    User Name:
+                    <input
+                      type="text"
+                      value={user.name}
+                      id="name"
+                      required
+                      onChange={(e) =>
+                        handleInputChange(index, "name", e.target.value)
+                      }
+                    />
+                  </label>
+                </td>
+                <td>
+                  <label htmlFor="Email">
+                    User Email:
+                    <input
+                      type="email"
+                      id="Email"
+                      value={user.age}
+                      required
+                      onChange={(e) =>
+                        handleInputChange(index, "email", e.target.value)
+                      }
+                    />
+                  </label>
+                </td>
+                <td>
+                  <br />
+                  <button type="button" onClick={() => handleDeleteUser(index)}>
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={handleAddUser}
+        >
+          Add User
+        </button>
+        <br />
+        <br />
         <button type="submit" className="btn btn-primary">
           Save
         </button>
-
       </form>
       <div>
         <h6>{status}</h6>

@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function UserExpenses() {
   let navigate = useNavigate();
-  const { token } = useAuth();
+  const { token,setAuthToken } = useAuth();
   const { expenseId } = useParams();
   const [isChecked, setIsChecked] = useState(false);
   let [UserExpenses, setUserExpenses] = useState([]);
@@ -16,7 +16,9 @@ export default function UserExpenses() {
   let [currency, setCurrency] = useState();
 
   useEffect(() => {
+    
     const fetchDetails = async () => {
+      try{
       const response = await axios.get(
         process.env.REACT_APP_BACKEND_HOST +
           "/expenseId/" +
@@ -36,6 +38,10 @@ export default function UserExpenses() {
       });
       setTotalAmount(totalAmount);
       setCurrency(response.data[0].currency);
+    }catch(error){
+      setAuthToken(null);
+      localStorage.removeItem("token");
+    }
     };
     fetchDetails();
   }, [token, expenseId]);

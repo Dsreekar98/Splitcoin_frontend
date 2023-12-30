@@ -5,9 +5,8 @@ import GroupDatail from "./GroupDatail";
 import { Link } from "react-router-dom";
 
 export default function Groups() {
-  const { token } = useAuth();
+  const { token,setAuthToken } = useAuth();
   let [groups, setGroups]=useState([]);
-  console.log("token val", token);
   useEffect(() => {
     const fetchGroups = async () => {
       try {
@@ -19,9 +18,10 @@ export default function Groups() {
           },
         });
         const data = await response.json();
-        console.log(data);
         setGroups(data);
       } catch (error) {
+        setAuthToken(null);
+      localStorage.removeItem("token");
         console.error("Error fetching groups:", error.message);
       }
     };

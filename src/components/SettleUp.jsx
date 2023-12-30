@@ -3,11 +3,12 @@ import { useAuth } from "./JwtToken";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 export default function SettleUp() {
-  const { token } = useAuth();
+  const { token,setAuthToken } = useAuth();
   const { groupId } = useParams();
   let [transactions, setTransactions] = useState([]);
   useEffect(() => {
     const retreiveTransactions = async () => {
+      try{
       const response = await axios.get(
         `${process.env.REACT_APP_BACKEND_HOST}/settleup/${groupId}`,
         {
@@ -15,9 +16,14 @@ export default function SettleUp() {
             Authorization: `Bearer ${token}`,
           },
         }
+        
       );
       setTransactions(response.data);
-      console.log(response.data);
+      }catch(Error){
+        setAuthToken(null);
+      localStorage.removeItem("token");
+      }
+      
     };
     retreiveTransactions();
   }, [token]);

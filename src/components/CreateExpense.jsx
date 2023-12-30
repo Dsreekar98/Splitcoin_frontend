@@ -8,7 +8,7 @@ export default function CreateExpense() {
   let [currency, setCurrency] = useState("");
   let [status, setStatus] = useState("");
   const [availableCurrencies, setAvailableCurrencies] = useState([]);
-  const { token } = useAuth();
+  const { token,setAuthToken } = useAuth();
   let navigate = useNavigate();
   let {groupId}=useParams();
 
@@ -27,6 +27,8 @@ export default function CreateExpense() {
         );
         setAvailableCurrencies(response.data);
       } catch (error) {
+        setAuthToken(null);
+      localStorage.removeItem("token");
         console.error("Error fetching available currencies:", error.message);
       }
     };
@@ -59,6 +61,8 @@ export default function CreateExpense() {
       }
       
     } catch (error) {
+      setAuthToken(null);
+      localStorage.removeItem("token");
       console.error("Error while storing expense: " + error.message);
     }
   };

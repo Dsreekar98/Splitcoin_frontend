@@ -14,9 +14,8 @@ const calculateDaysAgo = (lastModifiedTimestamp) => {
 };
 
 export default function ExpenseDetail({ expense }) {
-  const { token } = useAuth();
+  const { token,setAuthToken } = useAuth();
   const daysAgo = calculateDaysAgo(expense.lastModifiedAt);
-  console.log(daysAgo);
   let deleteExpense = async (e) => {
     e.preventDefault();
     try {
@@ -28,9 +27,10 @@ export default function ExpenseDetail({ expense }) {
           },
         }
       );
-      console.log("stats", response.status);
       window.location.reload();
     } catch (error) {
+      setAuthToken(null);
+      localStorage.removeItem("token");
       console.error("Error deleting the group:", error.message);
     }
   };

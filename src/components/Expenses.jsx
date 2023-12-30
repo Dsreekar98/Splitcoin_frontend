@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "./JwtToken";
-import axios from "axios";
-import GroupDatail from "./GroupDatail";
 import { Link, useParams } from "react-router-dom";
 import ExpenseDetail from "./ExpenseDetail";
 
 export default function Expenses(props) {
-  const { token } = useAuth();
+  const { token,setAuthToken } = useAuth();
 //   const group = props.location?.state?.groupData;
 //   console.log("group datails",group);
   //const group=groupData;
@@ -29,9 +27,10 @@ export default function Expenses(props) {
             }
           );
           const data = await response.json();
-          console.log(data);
           setExpenses(data);
         } catch (error) {
+          setAuthToken(null);
+      localStorage.removeItem("token");
           console.error("Error fetching groups:", error.message);
         }
       };

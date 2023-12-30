@@ -15,11 +15,11 @@ const calculateDaysAgo = (lastModifiedTimestamp) => {
 };
 
 export default function GroupDatail({ group }) {
-  const { token } = useAuth();
+  const { token,setAuthToken } = useAuth();
   const navigate = useNavigate();
   const daysAgo = calculateDaysAgo(group.lastModifiedAt);
 
-  console.log(daysAgo);
+
   let deleteGroup = async (e) => {
     e.preventDefault();
     try {
@@ -31,10 +31,12 @@ export default function GroupDatail({ group }) {
           },
         }
       );
-      console.log("stats", response.status);
+
       window.location.reload();
       navigate("/retrieveGroups");
     } catch (error) {
+      setAuthToken(null);
+      localStorage.removeItem("token");
       console.error("Error deleting the group:", error.message);
     }
   };
