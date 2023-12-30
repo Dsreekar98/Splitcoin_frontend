@@ -7,7 +7,6 @@ import { Link } from "react-router-dom";
 export default function Groups() {
   const { token } = useAuth();
   let [groups, setGroups]=useState([]);
-  console.log("token val", token);
   useEffect(() => {
     const fetchGroups = async () => {
       try {
@@ -19,7 +18,7 @@ export default function Groups() {
           },
         });
         const data = await response.json();
-        console.log(data);
+        
         setGroups(data);
       } catch (error) {
         console.error("Error fetching groups:", error.message);
