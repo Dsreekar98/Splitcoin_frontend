@@ -42,6 +42,7 @@ export default function UserCreation() {
       setEmail("");
       setPassword1("");
       setPassword2("");
+      console.log("response----", response);
       setSubmitted(true);
       setAuthToken(response.data.token);
       navigate("/");
