@@ -10,6 +10,7 @@ export default function CreateGroup() {
   let [currency, setCurrency] = useState("");
   let [status, setStatus] = useState("");
   let [users, setUsers] = useState([]);
+
   const handleAddUser = () => {
     setUsers([...users, { name: "", email: "" }]);
   };
@@ -18,7 +19,6 @@ export default function CreateGroup() {
     newUsers[index][key] = value;
     setUsers(newUsers);
   };
-
   const handleDeleteUser = (index) => {
     const newUsers = [...users];
     newUsers.splice(index, 1);
@@ -27,6 +27,9 @@ export default function CreateGroup() {
   const [availableCurrencies, setAvailableCurrencies] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
+    if (token == null) {
+      navigate("/userlogin");
+    }
     // Fetch available currencies from the backend
     const fetchCurrencies = async () => {
       try {
@@ -42,6 +45,7 @@ export default function CreateGroup() {
         setAvailableCurrencies(response.data);
       } catch (error) {
         setAuthToken(null);
+        navigate("/");
         localStorage.removeItem("token");
         console.error("Error fetching available currencies:", error.message);
       }
@@ -55,7 +59,7 @@ export default function CreateGroup() {
       const payload = {
         name: name,
         description: description,
-        currency: currency,
+        defaultCurrency: currency,
         users: users,
       };
       const response = await axios.post(

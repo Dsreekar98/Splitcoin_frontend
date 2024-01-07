@@ -15,7 +15,7 @@ const calculateDaysAgo = (lastModifiedTimestamp) => {
 };
 
 export default function GroupDatail({ group }) {
-  const { token,setAuthToken } = useAuth();
+  const { token,setAuthToken,userId} = useAuth();
   const navigate = useNavigate();
   const daysAgo = calculateDaysAgo(group.lastModifiedAt);
 
@@ -37,6 +37,7 @@ export default function GroupDatail({ group }) {
     } catch (error) {
       setAuthToken(null);
       localStorage.removeItem("token");
+      navigate("/");
       console.error("Error deleting the group:", error.message);
     }
   };
@@ -58,22 +59,25 @@ export default function GroupDatail({ group }) {
               to={`/retrieveExpense/${group.id}`}
               
             >
-              <h5 className="mb-1">{group.name}</h5>
-              <h6 className="mb-1">{group.description}</h6>
+              <h4 className="mb-1"style={{textAlign:'left'}}>{group.name}</h4>
+              <h5 className="mb-1" style={{textAlign:'left'}}>{group.description}</h5>
+              <h6 style={{textAlign:'left'}}>Created by {userId==group.createdBy.email?"Me":group.createdBy.name}</h6>
             </Link>
             <small>Modified {daysAgo} days ago</small>
             
+            
           </div>
         </div>
-        <div className="btn-group">
-          <button
-            className="btn btn-sm btn-outline-danger"
+       <div className="btn-group">
+       <button
+            className="btn btn-sm btn-danger"
             onClick={deleteGroup}
+            disabled={userId==group.createdBy.email?false:true}
           >
             Delete
           </button>
           <Link to={"/SettleUp/"+group.id}>
-          <button className="btn btn-sm btn-outline-secondary" >SettleUp</button></Link>
+          <button className="btn btn-sm btn-secondary" >SettleUp</button></Link>
         </div>
       </div>
       <br />

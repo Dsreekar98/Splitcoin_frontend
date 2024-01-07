@@ -7,39 +7,21 @@ export default function CreateExpense() {
   let [description, setDescription] = useState("");
   let [currency, setCurrency] = useState("");
   let [status, setStatus] = useState("");
-  const [availableCurrencies, setAvailableCurrencies] = useState([]);
   const { token,setAuthToken } = useAuth();
   let navigate = useNavigate();
   let {groupId}=useParams();
 
   useEffect(() => {
+    if(token==null)
+    {
+      navigate("/userlogin");
+    }
     // Fetch available currencies from the backend
-    const fetchCurrencies = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_BACKEND_HOST}/availableCurrencies`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              // Other headers...
-            },
-          }
-        );
-        setAvailableCurrencies(response.data);
-      } catch (error) {
-        setAuthToken(null);
-      localStorage.removeItem("token");
-        console.error("Error fetching available currencies:", error.message);
-      }
-    };
-
-    fetchCurrencies();
   }, [token]);
   let save = async (e) => {
     e.preventDefault();
     const payload = {
       description: description,
-      currency:currency
     };
     try {
       let response = await axios.post(
@@ -85,28 +67,7 @@ export default function CreateExpense() {
           />
         </div>
 
-        <div className="mb-3">
-          <label htmlFor="currency" className="form-label">
-            Currency
-          </label>
-          <select
-            id="currency"
-            className="form-control"
-            value={currency}
-            onChange={(input) => {
-              setCurrency(input.target.value);
-            }}
-          >
-            <option value="" disabled>
-              Select Currency
-            </option>
-            {availableCurrencies.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
-        </div>
+        
 
         <button type="submit" className="btn btn-primary">
           Save

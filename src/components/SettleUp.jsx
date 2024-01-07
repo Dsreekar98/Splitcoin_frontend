@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "./JwtToken";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 export default function SettleUp() {
+  const navigate = useNavigate();
   const { token,setAuthToken } = useAuth();
   const { groupId } = useParams();
   let [transactions, setTransactions] = useState([]);
   useEffect(() => {
+    if(token==null)
+    {
+      navigate("/userlogin");
+    }
     const retreiveTransactions = async () => {
       try{
       const response = await axios.get(
@@ -22,6 +27,7 @@ export default function SettleUp() {
       }catch(Error){
         setAuthToken(null);
       localStorage.removeItem("token");
+        navigate("/");
       }
       
     };

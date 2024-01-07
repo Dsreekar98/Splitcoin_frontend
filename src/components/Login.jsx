@@ -4,7 +4,7 @@ import { useAuth } from "./JwtToken";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
-  const { setAuthToken } = useAuth();
+  const { setAuthToken,setUserEmail } = useAuth();
   let [email, setEmail] = useState("");
   let [password1, setPassword1] = useState("");
   let [message, setMessage] = useState("");
@@ -30,6 +30,7 @@ export default function Login() {
       setPassword1("");
       if (response.status == "200") {
         setAuthToken(response.data.token);
+        setUserEmail(email);
         navigate("/");
       }
     } catch (error) {

@@ -7,41 +7,47 @@ import { useNavigate } from "react-router-dom";
 
 export default function UserExpenses() {
   let navigate = useNavigate();
-  const { token,setAuthToken } = useAuth();
+  const { token, setAuthToken, userId } = useAuth();
   const { expenseId } = useParams();
   const [isChecked, setIsChecked] = useState(false);
   let [UserExpenses, setUserExpenses] = useState([]);
   let [totalAmount, setTotalAmount] = useState(0);
   let [message, setMessage] = useState();
   let [currency, setCurrency] = useState();
+  let [createdById, setCreatedById] = useState("");
 
   useEffect(() => {
-    
-    const fetchDetails = async () => {
-      try{
-      const response = await axios.get(
-        process.env.REACT_APP_BACKEND_HOST +
-          "/expenseId/" +
-          expenseId +
-          "/retrieveuserexpenses",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setUserExpenses(response.data);
-      let totalAmount = 0;
-      response.data.forEach((userExpense) => {
-        if (userExpense.userExpenseType == "INCLUDE")
-          totalAmount += userExpense.amount;
-      });
-      setTotalAmount(totalAmount);
-      setCurrency(response.data[0].currency);
-    }catch(error){
-      setAuthToken(null);
-      localStorage.removeItem("token");
+    if (token == null) {
+      navigate("/userlogin");
     }
+
+    const fetchDetails = async () => {
+      try {
+        const response = await axios.get(
+          process.env.REACT_APP_BACKEND_HOST +
+            "/expenseId/" +
+            expenseId +
+            "/retrieveuserexpenses",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setUserExpenses(response.data);
+        let totalAmount = 0;
+        response.data.forEach((userExpense) => {
+          if (userExpense.userExpenseType == "INCLUDE")
+            totalAmount += userExpense.amount;
+        });
+        setTotalAmount(totalAmount);
+        setCurrency(response.data[0].currency);
+        setCreatedById(response.data[0].createdById);
+      } catch (error) {
+        setAuthToken(null);
+        localStorage.removeItem("token");
+        navigate("/");
+      }
     };
     fetchDetails();
   }, [token, expenseId]);
@@ -120,14 +126,15 @@ export default function UserExpenses() {
       <table className="table table-striped">
         <thead>
           <tr>
-          <th scope="col">User Name:</th>
-          <th scope="col">Amount</th>
-          <th scope="col">Part of the Expnse?</th>
+            <th scope="col">User Name:</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Part of the Expnse?</th>
           </tr>
         </thead>
         <tbody>
           {UserExpenses.map((userExpense, index) => (
             <tr key={index}>
+              {/* {setCreatedById(userExpense.createdById)} */}
               <td>{userExpense.user.name}</td>
               <td>
                 {
@@ -139,6 +146,7 @@ export default function UserExpenses() {
                     onChange={(e) =>
                       handleInputChangeAmount(index, "amount", e.target.value)
                     }
+                    disabled={userExpense.createdById == userId ? false : true}
                   />
                 }
               </td>
@@ -158,6 +166,7 @@ export default function UserExpenses() {
                       e.target.value
                     )
                   }
+                  disabled={userExpense.createdById == userId ? false : true}
                 >
                   <option value="" disabled>
                     Select
@@ -172,9 +181,11 @@ export default function UserExpenses() {
             </tr>
           ))}
           <tr>
-            <td colSpan="6">
-              <input type="button" onClick={hitEndpoint} value="SUBMIT" />
-            </td>
+            {createdById==userId?(<td colSpan="6">
+              
+                <input type="button" onClick={hitEndpoint} value="SUBMIT" />
+            
+            </td>):null}
           </tr>
         </tbody>
       </table>

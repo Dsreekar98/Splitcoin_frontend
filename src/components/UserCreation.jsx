@@ -4,7 +4,7 @@ import axios from "axios";
 import { useAuth } from "./JwtToken";
 
 export default function UserCreation() {
-  const { setAuthToken } = useAuth();
+  const { setAuthToken,setUserEmail } = useAuth();
   let [name, setName] = useState("");
   let [email, setEmail] = useState("");
   let [password1, setPassword1] = useState("");
@@ -39,6 +39,7 @@ export default function UserCreation() {
           },
         }
       );
+      setUserEmail(email);
       setEmail("");
       setPassword1("");
       setPassword2("");

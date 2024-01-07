@@ -1,7 +1,7 @@
 import axios from "axios";
 import React from "react";
 import { useAuth } from "./JwtToken";
-import { Link } from "react-router-dom";
+import { Link,useNavigate} from "react-router-dom";
 
 const calculateDaysAgo = (lastModifiedTimestamp) => {
   const currentTimestamp = Date.now();
@@ -14,7 +14,8 @@ const calculateDaysAgo = (lastModifiedTimestamp) => {
 };
 
 export default function ExpenseDetail({ expense }) {
-  const { token,setAuthToken } = useAuth();
+  const navigate = useNavigate();
+  const { token,setAuthToken,userId} = useAuth();
   const daysAgo = calculateDaysAgo(expense.lastModifiedAt);
   let deleteExpense = async (e) => {
     e.preventDefault();
@@ -31,6 +32,7 @@ export default function ExpenseDetail({ expense }) {
     } catch (error) {
       setAuthToken(null);
       localStorage.removeItem("token");
+      navigate("/");
       console.error("Error deleting the group:", error.message);
     }
   };
@@ -66,14 +68,14 @@ export default function ExpenseDetail({ expense }) {
           </Link>
         </div>
       </div>
-      <div className="btn-group">
+     {expense.createdById==userId?( <div className="btn-group">
         <button
-          className="btn btn-sm btn-outline-danger"
+          className="btn btn-sm btn-danger"
           onClick={deleteExpense}
         >
           Delete
         </button>
-      </div>
+      </div>):null}
       <br />
     </div>
   );
