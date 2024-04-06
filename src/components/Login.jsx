@@ -1,14 +1,15 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useAuth } from "./JwtToken";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
-  const { setAuthToken,setUserEmail } = useAuth();
+  const { setAuthToken, setUserEmail } = useAuth();
   let [email, setEmail] = useState("");
   let [password1, setPassword1] = useState("");
   let [message, setMessage] = useState("");
   const navigate = useNavigate();
+  const forgotPassword = () => {};
   const login = async (e) => {
     e.preventDefault();
     try {
@@ -71,9 +72,11 @@ export default function Login() {
             className="form-control"
             id="Password"
           />
-          <div style={{ color: 'red' }}>{message}</div>
+          <div style={{ color: "red" }}>{message}</div>
         </div>
-
+        <Link to="/forgotpassword">Forgot password?</Link>
+         <br />
+        <br />
         <button type="submit" className="btn btn-primary">
           Submit
         </button>

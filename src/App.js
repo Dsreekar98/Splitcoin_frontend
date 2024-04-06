@@ -15,6 +15,8 @@ import Home from "./components/Home";
 import CreateExpense from "./components/CreateExpense";
 import UserExpenses from "./components/UserExpenses";
 import SettleUp from "./components/SettleUp";
+import ForgotPassword1 from "./components/ForgotPassword1";
+import ResetPassword from "./components/ResetPassword";
 
 function App() {
   return (
@@ -32,6 +34,9 @@ function App() {
           <Route path="/retrieveUserExpenses/:expenseId" element={<UserExpenses/>}/>
           <Route path="/SettleUp/:groupId" element={<SettleUp/>}/>
           <Route path="/" element={<Home/>}/>
+          <Route path="/forgotpassword" element={<ForgotPassword1/>}/>
+          <Route path="/passwordreset/reset" element={<ResetPassword />} />
+          
 
         </Routes>
       </JwtToken>
