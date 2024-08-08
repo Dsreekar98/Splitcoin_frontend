@@ -1,8 +1,9 @@
 import axios from "axios";
-import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "./JwtToken";
 import Expenses from "./Expenses";
+import React, { useEffect, useState } from "react";
+import { ClipLoader } from "react-spinners";
 
 const calculateDaysAgo = (lastModifiedTimestamp) => {
   const currentTimestamp = Date.now();
@@ -14,14 +15,16 @@ const calculateDaysAgo = (lastModifiedTimestamp) => {
   return daysAgo;
 };
 
-export default function GroupDatail({ group }) {
+export default function GroupDatail({ group,onDelete }) {
   const { token,setAuthToken,userId} = useAuth();
   const navigate = useNavigate();
   const daysAgo = calculateDaysAgo(group.lastModifiedAt);
+  let [loading, setLoading] = useState(false);
 
 
   let deleteGroup = async (e) => {
     e.preventDefault();
+    setLoading(true)
     try {
       let response = await axios.delete(
         `${process.env.REACT_APP_BACKEND_HOST}/deleteGroup/${group.id}`,
@@ -32,7 +35,8 @@ export default function GroupDatail({ group }) {
         }
       );
 
-      window.location.reload();
+      //window.location.reload();
+      onDelete(group.id)
       navigate("/retrieveGroups");
     } catch (error) {
       setAuthToken(null);
@@ -40,7 +44,22 @@ export default function GroupDatail({ group }) {
       navigate("/");
       console.error("Error deleting the group:", error.message);
     }
+    finally{
+      setLoading(false)
+    }
   };
+
+  if (loading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ marginTop: "20px", fontSize: "18px", color: "#3498db" }}>
+            Deleting...
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>

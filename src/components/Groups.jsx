@@ -52,13 +52,18 @@ export default function Groups() {
       </div>
     );
   }
+
+  const handleDeleteGroups = (deletedGroupId) => {
+    // Filter out the deleted expense from the list
+    setGroups(groups.filter(group => group.id !== deletedGroupId));
+  };
   return (
     <div>
       <div>
         <h1>Groups</h1>
         <br />
         {groups.map((item) => {
-          return <GroupDatail group={item} key={item.id} />;
+          return <GroupDatail group={item} key={item.id} onDelete={handleDeleteGroups}/>;
         })}
       </div>
       <div>

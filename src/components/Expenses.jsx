@@ -49,6 +49,12 @@ export default function Expenses(props) {
     fetchExpenses(); // Call the function to fetch groups when the component mounts
   }, [token]);
 
+
+  const handleDeleteExpense = (deletedExpenseId) => {
+    // Filter out the deleted expense from the list
+    setExpenses(expenses.filter(expense => expense.id !== deletedExpenseId));
+  };
+
   if (loading) {
     return (
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
@@ -62,7 +68,7 @@ export default function Expenses(props) {
         <h1>Expenses</h1>
         <br />
         {expenses.map((item) => {
-          return <ExpenseDetail expense={item} key={item.id} />;
+          return <ExpenseDetail expense={item} key={item.id} onDelete={handleDeleteExpense} />;
         })}
       </div>
       <div>

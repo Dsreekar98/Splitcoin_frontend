@@ -15,7 +15,7 @@ const calculateDaysAgo = (lastModifiedTimestamp) => {
   return daysAgo;
 };
 
-export default function ExpenseDetail({ expense }) {
+export default function ExpenseDetail({ expense,onDelete }) {
   const navigate = useNavigate();
   let [loading, setLoading] = useState(false);
   const { token,setAuthToken,userId} = useAuth();
@@ -32,7 +32,8 @@ export default function ExpenseDetail({ expense }) {
           },
         }
       );
-     window.location.reload();
+      onDelete(expense.id);
+     //window.location.reload();
     } catch (error) {
       setAuthToken(null);
       localStorage.removeItem("token");
