@@ -4,6 +4,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import UserExpenseDetail from "./UserExpenseDetail";
 import { useNavigate } from "react-router-dom";
+import { ClipLoader } from "react-spinners";
 
 export default function UserExpenses() {
   let navigate = useNavigate();
@@ -15,6 +16,7 @@ export default function UserExpenses() {
   let [message, setMessage] = useState();
   let [currency, setCurrency] = useState();
   let [createdById, setCreatedById] = useState("");
+  let [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (token == null) {
@@ -22,6 +24,7 @@ export default function UserExpenses() {
     }
 
     const fetchDetails = async () => {
+      setLoading(true)
       try {
         const response = await axios.get(
           process.env.REACT_APP_BACKEND_HOST +
@@ -47,6 +50,9 @@ export default function UserExpenses() {
         setAuthToken(null);
         localStorage.removeItem("token");
         navigate("/");
+      }
+      finally{
+        setLoading(false)
       }
     };
     fetchDetails();
@@ -93,7 +99,10 @@ export default function UserExpenses() {
     setUserExpenses(temp);
   };
   const hitEndpoint = async () => {
+    setLoading(true)
+
     const payload = UserExpenses;
+    try{
     const response = axios.post(
       process.env.REACT_APP_BACKEND_HOST +
         "/expense/" +
@@ -105,13 +114,31 @@ export default function UserExpenses() {
           Authorization: `Bearer ${token}`,
         },
       }
+      
     );
     if ((await response).status == "200") {
       setMessage("Saved Successfully");
     } else {
       setMessage("Error while saving");
     }
+    }catch{}
+    finally{
+      setLoading(false)
+    }
+    
   };
+
+  if (loading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+        <div style={{ textAlign: "center" }}>
+          <ClipLoader color="#3498db" loading={loading} size={150} />
+          <div style={{ marginTop: "20px", fontSize: "18px", color: "#3498db" }}>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>

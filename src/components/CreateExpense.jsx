@@ -2,11 +2,13 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "./JwtToken";
 import { useNavigate, useParams } from "react-router-dom";
+import { ClipLoader } from "react-spinners";
 
 export default function CreateExpense() {
   let [description, setDescription] = useState("");
   let [currency, setCurrency] = useState("");
   let [status, setStatus] = useState("");
+  let [loading, setLoading] = useState(false);
   const { token,setAuthToken } = useAuth();
   let navigate = useNavigate();
   let {groupId}=useParams();
@@ -19,6 +21,7 @@ export default function CreateExpense() {
     // Fetch available currencies from the backend
   }, [token]);
   let save = async (e) => {
+    setLoading(true)
     e.preventDefault();
     const payload = {
       description: description,
@@ -47,7 +50,18 @@ export default function CreateExpense() {
       localStorage.removeItem("token");
       console.error("Error while storing expense: " + error.message);
     }
+    finally{
+      setLoading(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+        <ClipLoader color="#3498db" loading={loading} size={150} />
+      </div>
+    );
+  }
   return (
     <div style={{ width: "50%", textAlign: "left" }}>
       <form onSubmit={save}>

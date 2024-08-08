@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "./JwtToken";
 import axios from "axios";
 import { useParams,useNavigate } from "react-router-dom";
+import { ClipLoader } from "react-spinners";
 export default function SettleUp() {
   const navigate = useNavigate();
   const { token,setAuthToken } = useAuth();
   const { groupId } = useParams();
+  let [loading, setLoading] = useState(false);
   let [transactions, setTransactions] = useState([]);
   useEffect(() => {
     if(token==null)
@@ -13,6 +15,7 @@ export default function SettleUp() {
       navigate("/userlogin");
     }
     const retreiveTransactions = async () => {
+      setLoading(true)
       try{
       const response = await axios.get(
         `${process.env.REACT_APP_BACKEND_HOST}/settleup/${groupId}`,
@@ -29,10 +32,25 @@ export default function SettleUp() {
       localStorage.removeItem("token");
         navigate("/");
       }
+      finally{
+        setLoading(false)
+      }
       
     };
     retreiveTransactions();
   }, [token]);
+
+  if (loading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+        <div style={{ textAlign: "center" }}>
+          <ClipLoader color="#3498db" loading={loading} size={150} />
+          <div style={{ marginTop: "20px", fontSize: "18px", color: "#3498db" }}>
+          </div>
+        </div>
+      </div>
+    );
+  }
   return (
     <div>
       <table className ="table table-hover">

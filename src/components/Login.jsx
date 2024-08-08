@@ -2,16 +2,20 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useAuth } from "./JwtToken";
 import { Link, useNavigate } from "react-router-dom";
+import { ClipLoader } from "react-spinners";
 
 export default function Login() {
   const { setAuthToken, setUserEmail } = useAuth();
   let [email, setEmail] = useState("");
   let [password1, setPassword1] = useState("");
   let [message, setMessage] = useState("");
+  let [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const forgotPassword = () => {};
   const login = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    console.log("Loading state set to:", loading);
     try {
       const payload = {
         email: email,
@@ -39,8 +43,17 @@ export default function Login() {
       // Handle errors, e.g., display an error message
       console.error("Error:", error.response?.data || error.message);
     } finally {
+      setLoading(false);
     }
+
   };
+  if (loading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+        <ClipLoader color="#3498db" loading={loading} size={150} />
+      </div>
+    );
+  }
   return (
     <div style={{ width: "50%", textAlign: "left" }}>
       <form onSubmit={login}>

@@ -1,7 +1,9 @@
 import axios from "axios";
-import React from "react";
 import { useAuth } from "./JwtToken";
 import { Link,useNavigate} from "react-router-dom";
+import { ClipLoader } from "react-spinners";
+import React, { useEffect, useState } from "react";
+
 
 const calculateDaysAgo = (lastModifiedTimestamp) => {
   const currentTimestamp = Date.now();
@@ -15,10 +17,12 @@ const calculateDaysAgo = (lastModifiedTimestamp) => {
 
 export default function ExpenseDetail({ expense }) {
   const navigate = useNavigate();
+  let [loading, setLoading] = useState(false);
   const { token,setAuthToken,userId} = useAuth();
   const daysAgo = calculateDaysAgo(expense.lastModifiedAt);
   let deleteExpense = async (e) => {
     e.preventDefault();
+    setLoading(true)
     try {
       let response = await axios.delete(
         `${process.env.REACT_APP_BACKEND_HOST}/deleteExpense/${expense.id}`,
@@ -28,14 +32,29 @@ export default function ExpenseDetail({ expense }) {
           },
         }
       );
-      window.location.reload();
+     window.location.reload();
     } catch (error) {
       setAuthToken(null);
       localStorage.removeItem("token");
       navigate("/");
       console.error("Error deleting the group:", error.message);
     }
+    finally{
+      setLoading(false)
+    }
   };
+
+  if (loading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ marginTop: "20px", fontSize: "18px", color: "#3498db" }}>
+            Deleting...
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>

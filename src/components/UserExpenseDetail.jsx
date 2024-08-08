@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 
+
 export default function UserExpenseDetail({ userExpense }) {
     let [amount, setAmount]=useState();
     let [expenseType, setExpenseType]=useState();
     let [availableExpenseType,setAvailableExpenseType]=useState(userExpense?.userExpenseTypeList || []);
+
   const tableStyle = {
     width: "100%",
     tableLayout: "fixed",
